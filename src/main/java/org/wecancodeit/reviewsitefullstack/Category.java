@@ -59,4 +59,8 @@ public class Category {
 	public String getBeverage() {
 		return beverage;
 	}
+
+	public Collection<Review> getReviews() {
+		return reviews;
+	}
 }

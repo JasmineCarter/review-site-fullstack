@@ -1,8 +1,11 @@
 package org.wecancodeit.reviewsitefullstack;
 
+import java.util.Collection;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 
 @Entity
 public class Tag {
@@ -12,6 +15,9 @@ public class Tag {
 	private long id;
 
 	private String description;
+
+	@ManyToMany(mappedBy = "tags") //we want to track reviews by tags
+	private Collection<Review> reviews;
 
 	@Override
 	public int hashCode() {
@@ -49,6 +55,10 @@ public class Tag {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public Collection<Review> getReviews() {
+		return reviews;
 	}
 
 }

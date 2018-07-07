@@ -88,7 +88,7 @@ public class JpaMappingsTest {
 	@Test
 	public void shouldSaveAndLoadAReview() {
 		Category coffee = categoryRepo.save(new Category("coffee"));
-		Review dunkin = reviewRepo.save(new Review("dunkin", "description", coffee));
+		Review dunkin = reviewRepo.save(new Review("dunkin", "description", "", coffee));
 		long dunkinId = dunkin.getId();
 
 		entityManager.flush();
@@ -103,7 +103,7 @@ public class JpaMappingsTest {
 	@Test
 	public void shouldGenerateReviewId() {
 		Category coffee = categoryRepo.save(new Category("coffee"));
-		Review dunkin = reviewRepo.save(new Review("dunkin", "description", coffee));
+		Review dunkin = reviewRepo.save(new Review("dunkin", "description","", coffee));
 		long dunkinId = dunkin.getId();
 
 		entityManager.flush();
@@ -116,7 +116,7 @@ public class JpaMappingsTest {
 	@Test
 	public void shouldEstablishReviewToCategoryRelationship() {
 		Category coffee = categoryRepo.save(new Category("coffee"));
-		Review dunkin = reviewRepo.save(new Review("dunkin", "description", coffee));
+		Review dunkin = reviewRepo.save(new Review("dunkin", "description","", coffee));
 		long dunkinId = dunkin.getId();
 
 		entityManager.flush();
@@ -130,13 +130,61 @@ public class JpaMappingsTest {
 	@Test
 	public void shouldEstablishCategoryToReviewRelationship() {
 		Category coffee = categoryRepo.save(new Category("coffee"));
-		Review dunkin = reviewRepo.save(new Review("dunkin", "description", coffee));
-		Review starbucks = reviewRepo.save(new Review("starbucks", "description", coffee));
+		Review dunkin = reviewRepo.save(new Review("dunkin", "description","", coffee));
+		Review starbucks = reviewRepo.save(new Review("starbucks", "description","", coffee));
+		long coffeeId = coffee.getId();
+		
+		entityManager.flush();
+		entityManager.clear();
+		
+		Optional<Category> result = categoryRepo.findById(coffeeId);
+		coffee = result.get();
+
+		assertThat(coffee.getReviews(), containsInAnyOrder(dunkin, starbucks));
+	}
+	
+	@Test 
+	public void shouldEstablishReviewToTagRelationship() {
+		Category coffee = categoryRepo.save(new Category("coffee"));
+		
+		Tag hot = tagRepo.save(new Tag("hot")); 
+		Tag cold = tagRepo.save(new Tag("cold")); 
+		
+		Review dunkin = reviewRepo.save(new Review("dunkin", "description","", coffee, hot, cold));
+		
+		entityManager.flush();
+		entityManager.clear();
+		
+		long dunkinId = dunkin.getId();
+
+		
+		Optional<Review> result = reviewRepo.findById(dunkinId);
+		dunkin = result.get();
+		
+		assertThat(dunkin.getTags(), containsInAnyOrder(hot,cold)); 
+}
+	
+	@Test 
+	public void shouldEstablishTagToReviewRelationship() {
+		Category coffee = categoryRepo.save(new Category("coffee"));
+		
+		Tag hot = tagRepo.save(new Tag("hot")); 
+		Tag cold = tagRepo.save(new Tag("cold")); 
+		
+		Review dunkin = reviewRepo.save(new Review("dunkin", "description","", coffee, hot, cold));
+		Review starbucks = reviewRepo.save(new Review("starbucks", "description","", coffee, hot));
 
 		entityManager.flush();
 		entityManager.clear();
+		
+		long hotId = hot.getId();
 
-		Collection<Review> reviewsForCategory = reviewRepo.findByBeverageContains(coffee);
-		assertThat(reviewsForCategory, containsInAnyOrder(dunkin, starbucks));
+		
+		Optional<Tag> result = tagRepo.findById(hotId);
+		hot = result.get();
+		
+		assertThat(hot.getReviews(), containsInAnyOrder(dunkin, starbucks)); 
 	}
+	
+	
 }
