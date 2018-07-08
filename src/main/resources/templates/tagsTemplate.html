@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">>
+<head>
+	<title>Tags</title>
+</head>
+<h1>Tags</h1>
+<body>
+<div th:each="tag: ${tagsModel}">
+		<p th:text="${tag.name}"></p>
+		<a href="@{/tag(id=${tag.id})}">Back to Tags View</a>
+	</div>
+</body>
+</html>

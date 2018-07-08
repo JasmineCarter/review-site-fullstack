@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">>
+<head>
+	<title>Reviews</title>
+</head>
+<h1>Reviews</h1>
+<body>
+<div th:each="review: ${reviewsModel}">
+		<p th:text="${review.name}"></p>
+		<a href="@{/review(id=${review.id})}">Back to Reviews View</a>
+	</div>
+</body>
+</html>
