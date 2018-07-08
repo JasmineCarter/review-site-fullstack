@@ -19,6 +19,9 @@ public class ReviewController {
 	@Resource
 	CategoryRepository categoryRepo; 
 	
+	@Resource
+	TagRepository tagRepo; 
+	
 	@RequestMapping("/review")
 	public String find1Review(@RequestParam(value = "id")long reviewId, Model model) throws ReviewNotFoundException{
 		Optional<Review> review = reviewRepo.findById(reviewId); 
@@ -43,6 +46,51 @@ public class ReviewController {
 		throw new CategoryNotFoundException();
 		
 	}
+
+
+
+		@RequestMapping("/tag")
+		public String find1Tag(@RequestParam(value = "id")long tagId, Model model) throws TagNotFoundException{
+			Optional<Tag> tag = tagRepo.findById(tagId); 
+			
+			if(tag.isPresent()) {
+				model.addAttribute("tagsModel", tag.get());
+				return "tagTemplate"; 
+			}
+			throw new TagNotFoundException();
+		
+	}
+
+
+
+		@RequestMapping("/reviews")
+		public String findAllReviews(Model model) {
+		
+				model.addAttribute("reviews", reviewRepo.findAll()); 
+				return ("reviews"); 
+		
+			
+		}
+
+
+		@RequestMapping("/categories")
+		public String findAllCategories(Model model) {
+		
+				model.addAttribute("categories", categoryRepo.findAll()); 
+				return ("categories"); 
+			
+			
+		}
+
+
+
+		@RequestMapping("/tags")
+		public String findAllTags(Model model) {
+		
+				model.addAttribute("tags", tagRepo.findAll()); 
+				return ("tags");
+			
+		}
 
 			
 	

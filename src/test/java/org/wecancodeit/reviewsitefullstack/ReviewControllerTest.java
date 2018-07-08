@@ -15,6 +15,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 
 
+
+
 public class ReviewControllerTest {
 	
 	@InjectMocks
@@ -27,10 +29,26 @@ public class ReviewControllerTest {
 	private CategoryRepository categoryRepo;
 	
 	@Mock
+	private TagRepository tagRepo;
+	
+	@Mock
 	private Review review1;
 	
 	@Mock
+	private Review review2;
+	
+	@Mock
 	private Category category1;
+	
+	@Mock
+	private Category category2;
+	
+	@Mock
+	private Tag tag1;
+	
+	@Mock
+	private Tag tag2;
+	
 	
 	@Mock
 	private Model model;
@@ -57,4 +75,41 @@ public class ReviewControllerTest {
 		underTest.find1Category(category1Id, model);
 		verify(model).addAttribute("categoriesModel",category1); 
 	}
+	
+	@Test
+	public void shouldAddSingleTagToModel() throws TagNotFoundException {
+		long tag1Id = 1; 
+		when(tagRepo.findById(tag1Id)).thenReturn(Optional.of(tag1)); 
+
+		underTest.find1Tag(tag1Id, model);
+		verify(model).addAttribute("tagsModel",tag1);
+	}
+
+	
+	@Test 
+	public void shouldAddAllReviewsToModel( ) {
+		Collection<Review> allReviews = Arrays.asList(review1, review2); 
+		when(reviewRepo.findAll()).thenReturn(allReviews);
+		
+		underTest.findAllReviews(model); 
+		verify(model).addAttribute("reviews", allReviews); 
+	}
+	@Test
+	public void shouldAddAllCategoriesToModel() {
+		Collection<Category> allCategories = Arrays.asList(category1, category2); 
+		when(categoryRepo.findAll()).thenReturn(allCategories);
+		
+		underTest.findAllCategories(model); 
+		verify(model).addAttribute("categories", allCategories); 
+	}
+	
+	@Test
+	public void shouldAddAllTagsToModel() {
+		
+		Collection<Tag> allTags = Arrays.asList(tag1, tag2); 
+		when(tagRepo.findAll()).thenReturn(allTags);
+		
+		underTest.findAllTags(model); 
+		verify(model).addAttribute("tags", allTags);
+}
 }
