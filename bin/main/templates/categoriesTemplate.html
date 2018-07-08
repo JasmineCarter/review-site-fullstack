@@ -1,13 +1,16 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-	<title>A Category</title>
+    <title>categories</title>
 </head>
-<h1>Categories</h1>
 <body>
-<div th:each="category: ${categoriesModel}">
-		<p th:text="${category.name}"></p>
-		<a href="@{/category(id=${category.id})}">Back to Categories View</a>
-	</div>
+    <h1>Our Categories</h1>
+
+    <div th:each="category: ${categoriesModel}">
+        
+        <a th:href="@{/category(id=${category.id})}"  th:text="${category.beverage}"></a>
+            
+        
+    </div>
+
 </body>
 </html>
