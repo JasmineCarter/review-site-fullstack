@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import java.util.Arrays;
 
@@ -27,7 +28,8 @@ public class Review {
 	@ManyToMany
 	private Collection<Tag> tags;
 
-
+	@OneToMany(mappedBy = "review")
+	private Collection<Comment> comments; 
 
 	public Review(String name, String description, String image, Category beverage, Tag...tags) {
 		this.name = name;
@@ -87,5 +89,19 @@ public class Review {
 
 	public String getImage() {
 		return image; 
+	}
+
+	public Collection<Comment> getComments() {
+		return comments;
+	}
+
+	//allowing the collection to add this tag we created in our form
+	public void addTag(Tag newTag) {
+		tags.add(newTag); 
+	}
+
+	//allowing the collection to have a tag removed 
+	public void removeTag(Tag tagToRemove) {
+		tags.remove(tagToRemove); 
 	}
 }
