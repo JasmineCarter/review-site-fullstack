@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -52,4 +53,20 @@ public class TagController {
 		
 		return "redirect:review?id=" + reviewId; 
 	}
+	
+	//add tags w/ ajax
+	@RequestMapping("/all-tags-ajax")
+	public String showAllTags(Model model) {
+		model.addAttribute("tagsModel", tagRepo.findAll());
+		return "tagsAjax"; 
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
 	}
