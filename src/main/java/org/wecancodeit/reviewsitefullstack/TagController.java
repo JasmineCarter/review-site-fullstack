@@ -6,7 +6,9 @@ import javax.annotation.Resource;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -38,35 +40,41 @@ public class TagController {
 		return "redirect:review?id=" + reviewId;
 
 	}
-	
-	//can remove tag with HTML forms
+
+	// can remove tag with HTML forms
 	@RequestMapping("/remove-tag-button")
 	public String removeTagButton(@RequestParam Long tagId, @RequestParam Long reviewId) {
-		Optional<Tag> tagToRemoveResult = tagRepo.findById(tagId); 
-		Tag tagToRemove = tagToRemoveResult.get(); 
-		
-		Optional<Review> reviewResult = reviewRepo.findById(reviewId); 
-		Review review = reviewResult.get(); 
-		
-		review.removeTag(tagToRemove); 
-		reviewRepo.save(review); 
-		
-		return "redirect:review?id=" + reviewId; 
+		Optional<Tag> tagToRemoveResult = tagRepo.findById(tagId);
+		Tag tagToRemove = tagToRemoveResult.get();
+
+		Optional<Review> reviewResult = reviewRepo.findById(reviewId);
+		Review review = reviewResult.get();
+
+		review.removeTag(tagToRemove);
+		reviewRepo.save(review);
+
+		return "redirect:review?id=" + reviewId;
 	}
-	
-	//add tags w/ ajax
+
+	// show tags with java and thymeleaf
 	@RequestMapping("/all-tags-ajax")
 	public String showAllTags(Model model) {
 		model.addAttribute("tagsModel", tagRepo.findAll());
-		return "tagsAjax"; 
-		
-		
-		
+		return "tagsAjax";
+
 	}
-	
-	
-	
-	
-	
-	
+
+	//use ajax to add tags to the database
+	@RequestMapping(path = "/tags/{tagName}", method = RequestMethod.POST)
+	public String addTag(@PathVariable String tagName, Model model) {
+		Tag tagToAdd = tagRepo.findByDescription(tagName); 
+		if (tagToAdd == null) {
+			tagToAdd = new Tag (tagName); 
+			tagRepo.save(tagToAdd); 
+		}
+		model.addAttribute("tagsModel", tagRepo.findAll()); 
+		
+		return "partials/tags-list-added"; 
+		}
 	}
+
