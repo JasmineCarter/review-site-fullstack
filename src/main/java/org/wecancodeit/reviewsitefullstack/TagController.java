@@ -64,17 +64,36 @@ public class TagController {
 
 	}
 
-	//use ajax to add tags to the database
+	// use ajax to add tags to the database
 	@RequestMapping(path = "/tags/{tagName}", method = RequestMethod.POST)
 	public String addTag(@PathVariable String tagName, Model model) {
-		Tag tagToAdd = tagRepo.findByDescription(tagName); 
+		Tag tagToAdd = tagRepo.findByDescription(tagName);
 		if (tagToAdd == null) {
-			tagToAdd = new Tag (tagName); 
-			tagRepo.save(tagToAdd); 
+			tagToAdd = new Tag(tagName);
+			tagRepo.save(tagToAdd);
 		}
-		model.addAttribute("tagsModel", tagRepo.findAll()); 
-		
-		return "partials/tags-list-added"; 
-		}
+		model.addAttribute("tagsModel", tagRepo.findAll());
+
+		return "partials/tags-list-added";
 	}
 
+	// use ajax to remove tags from database
+	@RequestMapping(path = "/tags/remove/{tagName}", method = RequestMethod.POST)
+	public String RemoveTag(@PathVariable String tagName, Model model) {
+
+		Tag tagToDelete = tagRepo.findByDescription(tagName);
+		if (tagRepo.findByDescription(tagName) != null) {
+			for (Review review : tagToDelete.getReviews()) {
+				review.removeTag(tagToDelete);
+				reviewRepo.save(review);
+			}
+		}
+
+		tagRepo.delete(tagToDelete);
+		model.addAttribute("tagsModel", tagRepo.findAll());
+
+		return "partials/tags-list-removed";
+
+	}
+
+}
